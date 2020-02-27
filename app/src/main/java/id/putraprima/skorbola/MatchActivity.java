@@ -9,11 +9,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MatchActivity extends AppCompatActivity {
     public static final String HOME_TEAM = "hometeam";
     public static final String AWAY_TEAM = "awayteam";
     public static final String RESULT = "result";
+    public static final String SCORER = "scorer";
     public static final String IMAGE_KEY_HOME = "imagekeyhome";
     public static final String IMAGE_KEY_AWAY = "imagekeyaway";
     private TextView namehome,nameaway;
@@ -23,6 +25,11 @@ public class MatchActivity extends AppCompatActivity {
     private ImageView awayflag;
     private TextView scorerHome;
     private TextView scorerAway;
+
+    @Override
+    public void setTitle(int titleId) {
+        super.setTitle("HOLA");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +51,8 @@ public class MatchActivity extends AppCompatActivity {
             //TODO : display value here
             namehome.setText(extras.getString(HOME_TEAM));
             nameaway.setText(extras.getString(AWAY_TEAM));
-            Bitmap home = extras.getParcelable("imagekeyhome");
-            Bitmap away = extras.getParcelable("imagekeyaway");
+            Bitmap home = extras.getParcelable(IMAGE_KEY_HOME);
+            Bitmap away = extras.getParcelable(IMAGE_KEY_AWAY);
             homeflag.setImageBitmap(home);
             awayflag.setImageBitmap(away);
         }
@@ -59,13 +66,11 @@ public class MatchActivity extends AppCompatActivity {
     public void handleAddHomeScore(View view) {
         Intent intent = new Intent(this,ScorerActivity.class);
         startActivityForResult(intent,1);
-        homeScore++;
     }
 
     public void handleAddAwayScore(View view) {
         Intent intent = new Intent(this,ScorerActivity.class);
         startActivityForResult(intent,2);
-        awayScore++;
     }
     //TODO : Overide the onActivityResult
 
@@ -77,9 +82,11 @@ public class MatchActivity extends AppCompatActivity {
         {
             if(resultCode == RESULT_OK)
             {
+                homeScore++;
                 String a = scorerHome.getText().toString();
+                String time = data.getStringExtra("time");
                 String scorer = data.getStringExtra("pencetak");
-                scorerHome.setText(a + "\n" + scorer);
+                scorerHome.setText(a + "\n" + scorer+ " - '"+time);
                 homeScoretxt.setText(Integer.toString(homeScore));
             }
         }
@@ -87,28 +94,41 @@ public class MatchActivity extends AppCompatActivity {
         {
             if(resultCode == RESULT_OK)
             {
+                awayScore++;
                 String a = scorerAway.getText().toString();
+                String time = data.getStringExtra("time");
                 String scorer = data.getStringExtra("pencetak");
-                scorerAway.setText(a + "\n" + scorer);
+                scorerAway.setText(a + "\n" + scorer + " '"+time);
                 awayScoretxt.setText(Integer.toString(awayScore));
             }
+        }
+        if(resultCode == RESULT_CANCELED)
+        {
+            Toast.makeText(this, "Nothing Selected", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void handleResultBtn(View view) {
         String NameHome = namehome.getText().toString();
         String NameAway = nameaway.getText().toString();
-        String Draw = " : HASIL NYA DRAW";
+        String ScoreHome = scorerHome.getText().toString();
+        String ScoreAway = scorerAway.getText().toString();
+
+//        int ScoreHome = Integer.parseInt(homeScoretxt.getText().toString());
+//        int ScoreAway = Integer.parseInt(awayScoretxt.getText().toString());
+
+        String Draw = " DRAW ";
         Intent intent = new Intent(this,ResultActivity.class);
         if( awayScore > homeScore )
         {
             intent.putExtra(RESULT,NameAway);
+            intent.putExtra(SCORER,ScoreAway);
             startActivity(intent);
         }
         else if( awayScore < homeScore )
         {
             intent.putExtra(RESULT,NameHome);
-            intent.putExtra(RESULT,NameHome);
+            intent.putExtra(SCORER,ScoreHome);
             startActivity(intent);
         }else
         {

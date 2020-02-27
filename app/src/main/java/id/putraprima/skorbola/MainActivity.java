@@ -111,24 +111,21 @@ public class MainActivity extends AppCompatActivity {
         Bitmap away = flagaway.getDrawingCache();
 
         Intent intent = new Intent(this,MatchActivity.class);
-//        if(bitmap == null)
-//        {
+        if(bitmap == null)
+        {
+            Toast.makeText(this,"Silahkan Isi gambar terlebih dahulu", Toast.LENGTH_LONG).show();
+        }else
+        {
             if (!NameAway.equals("") && !NameHome.equals(""))
             {
                 intent.putExtra(HOME_TEAM,NameHome);
                 intent.putExtra(AWAY_TEAM,NameAway);
-//                intent.putExtra(IMAGE_KEY_HOME,home);
-//                intent.putExtra(IMAGE_KEY_AWAY,away);
+                intent.putExtra(IMAGE_KEY_HOME,home);
+                intent.putExtra(IMAGE_KEY_AWAY,away);
                 startActivity(intent);
-            }
-            else
-            {
+            }else{
                 Toast.makeText(this,"Harus melengkapi Data Team yang bertanding", Toast.LENGTH_SHORT).show();
             }
-//        }
-//        else
-//        {
-//                Toast.makeText(this,"Silahkan Isi gambar terlebih dahulu", Toast.LENGTH_LONG).show();
-//        }
+        }
     }
 }
